@@ -7,7 +7,7 @@ locals {
       role_type            = "installer"
       policy_details       = data.rhcs_policies.all_policies.account_role_policies["sts_installer_permission_policy"]
       principal_type       = "AWS"
-      principal_identifiers = [
+      principal_identifier = [
         "arn:${data.aws_partition.current.partition}:iam::448648337690:role/RH-Managed-OpenShift-Installer",
         "arn:${data.aws_partition.current.partition}:iam::449053620653:role/RH-Managed-OpenShift-Installer"
       ]
@@ -57,7 +57,7 @@ data "aws_iam_policy_document" "custom_trust_policy" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = local.account_roles_properties[count.index].principal_type
-      identifiers = local.account_roles_properties[count.index].principal_identifiers
+      identifiers = local.account_roles_properties[count.index].principal_identifier
     }
   }
 }
