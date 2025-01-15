@@ -8,7 +8,7 @@ locals {
   operator_roles_policy_properties = [
     {
       policy_name    = substr("${var.account_role_prefix}-openshift-aws-vpce-operator-avo-aws-creds", 0, 64)
-      policy_details = {
+      policy_details = jsonencode({
         "Version": "2012-10-17",
         "Statement": [
           {
@@ -62,7 +62,7 @@ locals {
             }
           }
         ]
-      }
+      })
       namespace      = "openshift-aws-vpce-operator"
       operator_name  = "aws-vpce-operator"
     },
