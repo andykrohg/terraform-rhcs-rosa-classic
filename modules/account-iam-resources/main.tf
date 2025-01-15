@@ -7,10 +7,10 @@ locals {
       role_type            = "installer"
       policy_details       = data.rhcs_policies.all_policies.account_role_policies["sts_installer_permission_policy"]
       principal_type       = "AWS"
-      principal_identifiers = [
-        "arn:${data.aws_partition.current.partition}:iam::448648337690:role/RH-Managed-OpenShift-Installer",
-        "arn:${data.aws_partition.current.partition}:iam::449053620653:role/RH-Managed-OpenShift-Installer"
-      ]
+      principal_identifiers = data.aws_partition.current.partition == "aws" ? ["arn:${data.aws_partition.current.partition}:iam::${data.rhcs_info.current.ocm_aws_account_id}:role/RH-Managed-OpenShift-Installer"] : [
+          "arn:${data.aws_partition.current.partition}:iam::448648337690:role/RH-Managed-OpenShift-Installer",
+          "arn:${data.aws_partition.current.partition}:iam::449053620653:role/RH-Managed-OpenShift-Installer"
+        ]
     },
     {
       role_name            = "Support"
