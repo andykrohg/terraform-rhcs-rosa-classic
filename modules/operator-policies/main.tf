@@ -7,6 +7,66 @@ locals {
 
   operator_roles_policy_properties = [
     {
+      policy_name    = substr("${var.account_role_prefix}-openshift-aws-vpce-operator-avo-aws-creds", 0, 64)
+      policy_details = {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Action": [
+              "ec2:CreateTags",
+              "ec2:DeleteTags",
+              "ec2:DescribeTags",
+              "ec2:DescribeSubnets",
+              "ec2:CreateSecurityGroup",
+              "ec2:DeleteSecurityGroup",
+              "ec2:DescribeSecurityGroups",
+              "ec2:AuthorizeSecurityGroupIngress",
+              "ec2:AuthorizeSecurityGroupEgress",
+              "ec2:DescribeSecurityGroupRules",
+              "ec2:CreateVpcEndpoint",
+              "ec2:DeleteVpcEndpoints",
+              "ec2:DescribeVpcEndpoints",
+              "ec2:DescribeVpcs",
+              "ec2:ModifyVpcEndpoint",
+              "ec2:DescribeVpcEndpointServices",
+              "route53:ListHostedZonesByVPC",
+              "route53:ListTagsForResource",
+              "route53:GetHostedZone",
+              "route53:CreateHostedZone",
+              "route53:DeleteHostedZone",
+              "route53:ChangeTagsForResource",
+              "route53:ChangeResourceRecordSets",
+              "route53:ListHostedZonesByName",
+              "route53:ListResourceRecordSets"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+          },
+          {
+            "Sid": "Route53ManageRecords",
+            "Action": [
+              "route53:ChangeResourceRecordSets"
+            ],
+            "Effect": "Allow",
+            "Resource": "*",
+            "Condition": {
+              "ForAllValues:StringLike": {
+                "route53:ChangeResourceRecordSetsNormalizedRecordNames": [
+                  "*.openshiftapps.com",
+                  "*.devshift.org",
+                  "*.hypershift.local",
+                  "*.openshiftusgov.com",
+                  "*.devshiftusgov.com"
+                ]
+              }
+            }
+          }
+        ]
+      }
+      namespace      = "openshift-aws-vpce-operator"
+      operator_name  = "aws-vpce-operator"
+    },
+    {
       policy_name    = substr("${var.account_role_prefix}-openshift-cloud-network-config-controller-cloud-credentials", 0, 64)
       policy_details = data.rhcs_policies.all_policies.operator_role_policies["openshift_cloud_network_config_controller_cloud_credentials_policy"]
       namespace      = "openshift-cloud-network-config-controller"
