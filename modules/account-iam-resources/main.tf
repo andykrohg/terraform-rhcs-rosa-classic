@@ -7,7 +7,7 @@ locals {
       role_type            = "installer"
       policy_details       = data.rhcs_policies.all_policies.account_role_policies["sts_installer_permission_policy"]
       principal_type       = "AWS"
-      principal_identifier = [
+      principal_identifiers = [
         "arn:${data.aws_partition.current.partition}:iam::448648337690:role/RH-Managed-OpenShift-Installer",
         "arn:${data.aws_partition.current.partition}:iam::449053620653:role/RH-Managed-OpenShift-Installer"
       ]
@@ -18,21 +18,21 @@ locals {
       policy_details       = data.rhcs_policies.all_policies.account_role_policies["sts_support_permission_policy"]
       principal_type       = "AWS"
       // This is a SRE RH Support role which is used to assume this support role
-      principal_identifier = data.rhcs_policies.all_policies.account_role_policies["sts_support_rh_sre_role"]
+      principal_identifiers = [data.rhcs_policies.all_policies.account_role_policies["sts_support_rh_sre_role"]]
     },
     {
       role_name            = "Worker"
       role_type            = "instance_worker"
       policy_details       = data.rhcs_policies.all_policies.account_role_policies["sts_instance_worker_permission_policy"]
       principal_type       = "Service"
-      principal_identifier = "ec2.amazonaws.com"
+      principal_identifiers = ["ec2.amazonaws.com"]
     },
     {
       role_name            = "ControlPlane"
       role_type            = "instance_controlplane"
       policy_details       = data.rhcs_policies.all_policies.account_role_policies["sts_instance_controlplane_permission_policy"]
       principal_type       = "Service"
-      principal_identifier = "ec2.amazonaws.com"
+      principal_identifiers = ["ec2.amazonaws.com"]
     }
   ]
   account_roles_count = null_resource.validate_openshift_version != null ? length(local.account_roles_properties) : 0
@@ -57,7 +57,7 @@ data "aws_iam_policy_document" "custom_trust_policy" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = local.account_roles_properties[count.index].principal_type
-      identifiers = local.account_roles_properties[count.index].principal_identifier
+      identifiers = local.account_roles_properties[count.index].principal_identifiers
     }
   }
 }
