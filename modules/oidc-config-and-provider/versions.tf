@@ -7,9 +7,10 @@ terraform {
       version = ">= 4.0"
     }
     rhcs = {
-      version = ">= 1.6.2"
-      source  = "terraform-redhat/rhcs"
+      version = "= 1.6.8"
+      source  = "terraform.local/local/rhcs"
     }
+
     time = {
       source  = "hashicorp/time"
       version = ">= 0.9"
